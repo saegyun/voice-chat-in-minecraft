@@ -56,7 +56,7 @@ $(document).ready(() => {
 	const mainPage = $("#main");
 	const status = $("#status");
 	const members = $("#members");
-	const volumeInput = $("#input-volume");
+	// const volumeInput = $("#input-volume");
 	const muteBtn = $("#mute");
 	const quit = $("#quit");
 
@@ -99,7 +99,7 @@ $(document).ready(() => {
 	
 		room.on(RoomEvent.ParticipantDisconnected, async (remoteParticipant) => {
 			updateMemberList(room);
-			document.getElementById(`#${remoteParticipant.identity}`).remove();
+			document.getElementById(`${remoteParticipant.identity}`).remove();
 		});
 	
 		room.on(RoomEvent.TrackSubscribed, async (track, publication, participant) => {
@@ -196,12 +196,12 @@ $(document).ready(() => {
 		roomCreatePopupHide();
 	});
 
-	volumeInput.on("input", () => {
-		$("#volume").text(volumeInput.val() + "%");
+	// volumeInput.on("input", () => {
+	// 	$("#volume").text(volumeInput.val() + "%");
 
-		// 오디오 트랙 입력 gain줄이기
-		info.room.localParticipant.audioLevel = Math.floor(volumeInput.val() / 10) / 10;
-	});
+	// 	// 오디오 트랙 입력 gain줄이기
+	// 	info.room.localParticipant.audioLevel = Math.floor(volumeInput.val() / 10) / 10;
+	// });
 
 	muteBtn.on("click", () => {
 		if (info.muted) {
@@ -224,7 +224,7 @@ $(document).ready(() => {
 
 		info.room.disconnect();
 
-		document.getElementsByClassName("audioEmitter").forEach(v => { v.remove(); });
+		Array.from(document.getElementsByClassName("audioEmitter")).forEach(v => { v.remove(); });
 
 		mainPage.fadeOut(100, async () => {
 			members.html("");
