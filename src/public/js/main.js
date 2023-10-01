@@ -1,5 +1,5 @@
 import * as livekit from "./livekit.js"; 
-import { RoomEvent, Track } from 'livekit-client';
+import { RoomEvent, Track, createLocalAudioTrack } from 'livekit-client';
 
 const info = {
 	name: "undefined",
@@ -110,6 +110,11 @@ $(document).ready(async () => {
 			const element = track.attach();
 			console.log("subscribe track", participant.identity, " -> ", track.trackSid);
 			
+			const previousElement = document.getElementById(participant.identity);
+			if (previousElement) {
+				previousElement.remove();
+			}
+
 			element.hidden = true;
 			element.id = participant.identity;
 			element.className = "audioEmitter";
@@ -264,18 +269,20 @@ $(document).ready(async () => {
 	$("#mics").on("change", async () => {
 		const target = livekit.getMicDevice();
 		if (info.room) {
-			const previousAudioTrack = info.room.localParticipant.tracks.find(track => track.kind === 'audio');
+			const previousAudioTrack = info.room.localParticipant.getTrack(Track.Source.Microphone).track;
 
 			if (previousAudioTrack) {
-				info.room.localParticipant.unpublishTrack(previousAudioTrack);
+				info.room.localParticipant.unpublishTrack(previousAudioTrack, true);
 			} else {
 				console.error('이전 오디오 트랙을 찾을 수 없습니다.');
 				return;
 			}
-			const inputDevices = await LocalAudioTrack.getDevices();
-			const selectedDevice = inputDevices.find(device => device.deviceId === target);
-			const audioTrack = LocalAudioTrack.create(selectedDevice);
 
+			const audioTrack = await createLocalAudioTrack({
+				echoCancellation: true,
+				noiseSuppression: true,
+				deviceId: target,
+			});
 			info.room.localParticipant.publishTrack(audioTrack);
 		}
 	});
