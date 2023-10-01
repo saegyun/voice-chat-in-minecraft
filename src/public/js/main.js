@@ -264,7 +264,7 @@ $(document).ready(async () => {
 	$("#mics").on("change", async () => {
 		const target = livekit.getMicDevice();
 		if (info.room) {
-			const previousAudioTrack = room.localParticipant.tracks.find(track => track.kind === 'audio');
+			const previousAudioTrack = info.room.localParticipant.tracks.find(track => track.kind === 'audio');
 
 			if (previousAudioTrack) {
 				info.room.localParticipant.unpublishTrack(previousAudioTrack);
