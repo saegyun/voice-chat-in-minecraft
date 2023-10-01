@@ -64,7 +64,9 @@ $(document).ready(() => {
 	const updateMemberList = (room) => {
 		// livekit participant 리스트 가져와서 append
 		const memberList = room.participants;
-			
+		
+		members.html("");
+
 		memberList.forEach(v => {
 			members.append($(`<ul>${v.identity}</ul>`));
 		});
@@ -118,7 +120,7 @@ $(document).ready(() => {
 				track.setSubscribed(true);
 				
 				console.log("track for new participant", participant.identity, " -> ", track.trackSid);
-				const element = track.attach();
+				const element = track.track.attach();
 				console.log("subscribe track", participant.identity, " -> ", track.trackSid);
 				
 				element.hidden = true;
