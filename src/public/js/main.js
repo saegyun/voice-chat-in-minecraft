@@ -111,12 +111,20 @@ $(document).ready(() => {
 			console.log(data);
 		});
 
-		room.participants.forEach(participant => {
+		room.participants.forEach(async participant => {
 			const track = participant.getTrack(Track.Source.Microphone);
 			
 			if (track) {
 				track.setSubscribed(true);
+				
 				console.log("track for new participant", participant.identity, " -> ", track.trackSid);
+				const element = track.attach();
+				console.log("subscribe track", participant.identity, " -> ", track.trackSid);
+				
+				element.hidden = true;
+				element.id = participant.name;
+				await element.play();
+				document.body.appendChild(element);
 			}
 		});
 
