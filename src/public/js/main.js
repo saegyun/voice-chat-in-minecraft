@@ -5,6 +5,7 @@ const info = {
 	name: "undefined",
 	roomName: "undefined",
 	muted: false,
+	room: undefined,
 };
 
 async function getAudios() {
@@ -74,6 +75,9 @@ $(document).ready(() => {
 
 	const updateRoomList = async () => {
 		const rooms = await livekit.getRooms();
+		
+		roomList.html("");
+
 		rooms.forEach(v => {
 			const newRoom = $(`<ul>${v.name}</ul>`);
 			roomList.append(newRoom);
@@ -87,12 +91,15 @@ $(document).ready(() => {
 		// livekit 방 참가
 		const room = await livekit.joinRoom(info.name, roomName);
 
+		info.room = room;
+
 		room.on(RoomEvent.ParticipantConnected, async (remoteParticipant) => {
 			updateMemberList(room);
 		});
 	
-		room.on(RoomEvent.ParticipantDisconnected, async () => {
+		room.on(RoomEvent.ParticipantDisconnected, async (remoteParticipant) => {
 			updateMemberList(room);
+			document.getElementById(`#${remoteParticipant.identity}`).remove();
 		});
 	
 		room.on(RoomEvent.TrackSubscribed, async (track, publication, participant) => {
@@ -100,7 +107,8 @@ $(document).ready(() => {
 			console.log("subscribe track", participant.identity, " -> ", track.trackSid);
 			
 			element.hidden = true;
-			element.id = participant.name;
+			element.id = participant.identity;
+			element.className = "audioEmitter";
 			await element.play();
 			document.body.appendChild(element);
 		});
@@ -124,7 +132,9 @@ $(document).ready(() => {
 				console.log("subscribe track", participant.identity, " -> ", track.trackSid);
 				
 				element.hidden = true;
-				element.id = participant.name;
+				element.id = participant.identity;
+				element.className = "audioEmitter";
+
 				await element.play();
 				document.body.appendChild(element);
 			}
@@ -190,7 +200,7 @@ $(document).ready(() => {
 		$("#volume").text(volumeInput.val() + "%");
 
 		// 오디오 트랙 입력 gain줄이기
-
+		info.room.localParticipant.audioLevel = Math.floor(volumeInput.val() / 10) / 10;
 	});
 
 	muteBtn.on("click", () => {
@@ -199,22 +209,28 @@ $(document).ready(() => {
 				$("#mic-on").show();
 			});
 			// 오디오 트랙 unmute
+			info.room.localParticipant.getTrack(Track.Source.Microphone)?.unmute();
 	
 		} else {
 			$("#mic-on").hide(() => {
 				$("#mic-off").show();
 			});
 			// 오디오 트랙 mute
-
+			info.room.localParticipant.getTrack(Track.Source.Microphone)?.mute();
 		}
 		info.muted = !info.muted;
 	});
 	quit.on("click", () => {
+
+		info.room.disconnect();
+
+		document.getElementsByClassName("audioEmitter").forEach(v => { v.remove(); });
+
 		mainPage.fadeOut(100, async () => {
 			members.html("");
 			
 			// livekit 방 리스트 가져와서 append
-			await updateRoomList();			
+			await updateRoomList();
 
 			roomSelectPage.fadeIn(100);
 		});

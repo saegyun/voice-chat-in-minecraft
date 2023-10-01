@@ -1,6 +1,7 @@
 import { Room } from 'livekit-client';
 
 export async function joinRoom(username, roomname) {
+
 	const wsURL = "wss://discordclone-sivakcmf.livekit.cloud";
 	const res = await (await fetch(`livekit/getToken?roomname=${roomname}&username=${username}`)).json();
 	
