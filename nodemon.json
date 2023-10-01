@@ -1,0 +1,4 @@
+{
+    "ext": "ts",
+    "exec": "tsc && npx webpack && node src/server.js --config nodemon.json"
+}

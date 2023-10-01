@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Voice Chat</title>
+		<link rel="stylesheet" href="public/css/main.css">
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.2/css/all.min.css"
+		/>
+		<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+	</head>
+	<body>
+		<script type="module" src="public/dist/main.js"></script>
+		<!-- <script type="module" src="public/dist/main.js"></script> -->
+		<p id="name-holder">
+			<i class="fas fa-user"></i> Name : <span id="name">undefined</span>
+		</p>
+		<div id="insert-name" class="page">
+			<p class="header">
+				Name
+			</p>
+			<input type="text" id="username">
+			<div class="control">
+				<button id="pass">
+					<i class="fas fa-arrow-right"></i>
+				</button>
+			</div>
+		</div>
+		<div id="room-select" class="page" hidden>
+			<p class="header">
+				Rooms
+			</p>
+			<li id="rooms" class="lists">
+			</li>
+			<div class="control">
+				<button id="room-create">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
+		</div>
+		<div id="main" class="page" hidden>
+			<p id="status" class="header">
+				Room No.4
+			</p>
+			<div id="info">
+				<li id="members" class="lists">
+					<ul>Member 1</ul>
+					<ul>Member 2</ul>
+					<ul>Member 3</ul>
+				</li>
+				<div class="control">
+					<p>
+						Mic Volume (
+						<span id="volume">
+							90%
+						</span>
+						) : 
+					</p>
+					<input type="range" min="0" max="100" value="80" step="1" id="input-volume">
+					<button id="mute">
+						<i class="fas fa-microphone" id="mic-on"></i>
+						<i class="fas fa-microphone-slash" id="mic-off" style="display: none;"></i>
+					</button>
+					<button id="quit">
+						<i class="fas fa-times"></i>
+					</button>
+				</div>
+				
+			</div>
+		</div>
+		<div id="popup-layer" hidden>
+			<div id="room-create-name" class="popup page" hidden>
+				<p class="header">
+					Room Name
+				</p>
+				<input type="text" id="roomname">
+				<div class="control">
+					<button id="create">
+						<i class="fas fa-plus"></i>
+					</button>
+					<button id="halt">
+						<i class="fas fa-times"></i>
+					</button>
+				</div>
+			</div>
+			<div id="option" class="popup page" hidden>
+				<p class="header">
+					Option
+				</p>
+				<div class="control">
+					<i class="fas fa-microphone"></i>
+					n
+					<select name="mic" id="mics" class="select">
+					</select>
+					<br>
+					<br>
+					<!-- <i class="fas fa-volume-up"></i>
+					.
+					<select name="speaker" id="speakers" class="select">
+					</select>
+					<br>
+					<br> -->
+					<button id="save">
+						<i class="fas fa-save"></i>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<button id="option-btn">
+			<i class="fas fa-tools"></i>
+		</button>
+	</body>
+</html>

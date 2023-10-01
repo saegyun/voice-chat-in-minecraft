@@ -1,0 +1,195 @@
+:root {
+	--main-bg-color: #F0EDCC;
+	--main-highlight-color: #02343F;
+}
+* {
+	color: var(--main-highlight-color);
+	transition: all 0.1s;
+}
+html, body { 
+	font-size: 15px;
+	margin: 0;
+	height: 90%; 
+	background-color: var(--main-bg-color);
+}
+li, ul {
+	list-style: none;
+}
+button {
+	border-radius: 50%;
+	cursor: pointer;
+}
+button {
+	background-color: #062229;
+}
+button:hover {
+	background-color: #686868;
+}
+.page {
+	background-color: var(--main-highlight-color);
+
+	border-radius: 30px;
+
+	margin: 20px auto;
+	padding: 1%;
+
+	width: 90vw;
+	max-width: 600px;
+
+	text-align: center;
+}
+.header {
+	color: var(--main-bg-color);
+
+	font-size: 3.5rem;
+}
+#info {
+	width: 100%;
+
+	text-align: left;
+	
+	font-size: 1.025rem;
+}
+.lists {
+	background-color: var(--main-bg-color);
+	border-radius: 1rem;
+
+	padding-bottom: 1rem;
+
+	height: 10rem;
+
+	overflow-y: scroll;
+}
+.lists::-webkit-scrollbar {
+    width: 1.5rem;  /* 스크롤바의 너비 */
+}
+
+.lists::-webkit-scrollbar-thumb {
+    height: 5%; /* 스크롤바의 길이 */
+    background: var(--main-highlight-color); /* 스크롤바의 색상 */
+	background-clip: padding-box;    
+	border: 0.25rem solid transparent;
+
+    border-radius: 1.5rem;
+}
+.lists::-webkit-scrollbar-track {
+    background: var(--main-bg-color);  /*스크롤바 뒷 배경 색상*/
+    border-radius: 1.5rem;
+}
+.lists > ul {
+	margin: 1rem auto;
+	padding: 0.5rem;
+	
+	width: 90%;
+
+	background-color: #02343f22;
+	border-radius: 10px;
+
+	font-weight: bold;
+}
+.control {
+	padding: 1rem;
+
+	text-align: center;
+}
+.control > i {
+	color: var(--main-bg-color);
+	font-size: 1.5rem;
+}
+button {
+	width: 4rem;
+	height: 4rem;
+
+	margin: 0 0.25rem;
+
+	font-size: 1.5rem;
+
+	border: none;
+
+	outline: 2px solid var(--main-bg-color);
+}
+button > i {
+	color: var(--main-bg-color);
+}
+
+button#quit, button#halt {
+	background-color: #cb6969;
+}
+button#quit:hover, button#halt:hover {
+	background-color: #c92626;
+}
+input#input-volume {
+	width: 10rem;
+}
+.control > p , #volume {
+	display: inline;
+
+	font-size: 1.25rem;
+	color: var(--main-bg-color);
+}
+#volume {
+	color:#cb6969;
+}
+#rooms > ul:hover {
+	cursor: pointer;
+	background-color: #000000c2;
+	color: var(--main-bg-color);
+	transform: scale(1.025);
+}
+#popup-layer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #00000077;
+}
+#popup-layer > .popup {
+	padding: 15px;
+	box-sizing: border-box;
+}
+input[type='text'] {
+	outline: none;
+	padding-left: 1rem;
+	width: 90%;
+	height: 3rem;
+	font-size: 1.5rem;
+
+	background-color: var(--main-bg-color);
+
+	border: none;
+	border-radius: 20px;
+}
+#name-holder {
+	width: 90vw;
+	font-size: 1.25rem;
+	font-weight: bold;
+
+	max-width: 600px;
+	margin: 1rem auto;
+}
+#name {
+	color: #cb6969;
+}
+.select {
+	width: 40%;
+	height: 3rem;
+
+	font-size: 1.5rem;
+
+	background-color: var(--main-bg-color);
+
+	padding-left: 1rem;
+
+	outline: none;
+	border: none;
+	border-radius: 20px;
+}
+#mics, #speakers {
+	font-size: 0.5rem;
+}
+#option-btn	{
+	position: absolute;
+	left: 5px;
+	bottom: 5px;
+}
