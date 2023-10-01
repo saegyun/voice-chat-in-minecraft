@@ -1,4 +1,4 @@
-import { Room, RoomEvent } from 'livekit-client';
+import { Room } from 'livekit-client';
 
 export async function joinRoom(username, roomname) {
 	const wsURL = "wss://discordclone-sivakcmf.livekit.cloud";
@@ -20,20 +20,6 @@ export async function joinRoom(username, roomname) {
 	await room.connect(wsURL, res.data);
 	room.localParticipant.setMicrophoneEnabled(true);
 	await room.startAudio();
-
-	room.on(RoomEvent.TrackSubscribed, async (track, publication, participant) => {
-		const element = track.attach();
-		element.hidden = true;
-		element.id = participant.name;
-		await element.play();
-		document.body.appendChild(element);
-	});
-
-	room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
-		speakers.forEach(v => {
-			console.log(v);
-		});
-	});
 
 	alert('connected to room', room.name);
 

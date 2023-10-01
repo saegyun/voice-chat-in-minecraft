@@ -1,4 +1,5 @@
 import * as livekit from "./livekit.js"; 
+import { RoomEvent, Track } from 'livekit-client';
 
 const info = {
 	name: "undefined",
@@ -60,6 +61,15 @@ $(document).ready(() => {
 
 	nameInput.focus();
 
+	const updateMemberList = (room) => {
+		// livekit participant 리스트 가져와서 append
+		const memberList = room.participants;
+			
+		memberList.forEach(v => {
+			members.append($(`<ul>${v.identity}</ul>`));
+		});
+	};
+
 	const updateRoomList = async () => {
 		const rooms = await livekit.getRooms();
 		rooms.forEach(v => {
@@ -73,15 +83,42 @@ $(document).ready(() => {
 		const roomName = $(this).text();
 
 		// livekit 방 참가
-		await livekit.joinRoom(info.name, roomName);
+		const room = await livekit.joinRoom(info.name, roomName);
+
+		room.on(RoomEvent.ParticipantConnected, async (remoteParticipant) => {
+			updateMemberList(room);
+			const track = remoteParticipant.getTrack(Track.Source.Microphone);
+
+			if (track) {
+				track.setSubscribed(true);
+				console.log("track for new participant", remoteParticipant.identity, " -> ", track.trackSid);
+			}
+		});
+	
+		room.on(RoomEvent.ParticipantDisconnected, async () => {
+			updateMemberList(room);
+		});
+	
+		room.on(RoomEvent.TrackSubscribed, async (track, publication, participant) => {
+			const element = track.attach();
+			console.log("subscribe track", participant.identity, " -> ", track.trackSid);
+			
+			element.hidden = true;
+			element.id = participant.name;
+			await element.play();
+			document.body.appendChild(element);
+		});
+	
+		room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
+			let data = "current speakers : ";
+			speakers.forEach(v => {
+				data += v.identity + " ";
+			});
+			console.log(data);
+		});
 
 		roomSelectPage.fadeOut(100, async () => {
-			// livekit participant 리스트 가져와서 append
-			const memberList = await livekit.getMembers(roomName);
-			
-			memberList.forEach(v => {
-				members.append($(`<ul>${v.identity}</ul>`));
-			});
+			updateMemberList(room);
 			status.text(roomName);
 			mainPage.fadeIn(100);
 		});
