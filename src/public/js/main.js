@@ -125,6 +125,10 @@ $(document).ready(async () => {
 			console.log(data);
 		});
 
+		// room.on(RoomEvent.TrackPublished, (publication, remoteParticipant) => {
+
+		// });
+
 		room.participants.forEach(async participant => {
 			const track = participant.getTrack(Track.Source.Microphone);
 			
@@ -257,11 +261,22 @@ $(document).ready(async () => {
 		}
 	});
 
-	$("#mics").on("change", () => {
+	$("#mics").on("change", async () => {
 		const target = livekit.getMicDevice();
 		if (info.room) {
-			// info.room.localParticipant.getTrack(Track.Source.Microphone)?.
-			info.room.switchActiveDevice('audioInput', target);
+			const previousAudioTrack = room.localParticipant.tracks.find(track => track.kind === 'audio');
+
+			if (previousAudioTrack) {
+				info.room.localParticipant.unpublishTrack(previousAudioTrack);
+			} else {
+				console.error('이전 오디오 트랙을 찾을 수 없습니다.');
+				return;
+			}
+			const inputDevices = await LocalAudioTrack.getDevices();
+			const selectedDevice = inputDevices.find(device => device.deviceId === target);
+			const audioTrack = LocalAudioTrack.create(selectedDevice);
+
+			info.room.localParticipant.publishTrack(audioTrack);
 		}
 	});
 });
