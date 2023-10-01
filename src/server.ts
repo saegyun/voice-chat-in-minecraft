@@ -2,10 +2,17 @@ import express from "express";
 import { Paths } from "./common.js";
 import { livekitRouter } from "./routers/livekit.js";
 import dotenv from "dotenv";
+import https from "https";
+import fs from "fs";
 
 dotenv.config();
 
 const app = express();
+const options = {
+	key: fs.readFileSync(Paths.ssl + '/privKey.pem'),
+	cert: fs.readFileSync(Paths.ssl + '/cert.pem')
+};
+
 const port = 8080;
 
 app.use(express.json());
@@ -23,7 +30,8 @@ app.get("/", (req, res) => {
 	res.sendFile(Paths.views + "/index.html");
 });
 
-app.listen(port, () => {
-	console.log("server opened");
-	
+const server = https.createServer(options, app);
+
+server.listen(port, () => {
+	console.log("HTTPS server listening on port " + port);
 });

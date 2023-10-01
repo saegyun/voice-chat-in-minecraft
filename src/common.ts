@@ -7,4 +7,5 @@ export const Paths = {
 	public: basicPath + "/src/public",
 	views: basicPath + "/src/views",
 	livekit: basicPath + "/node_modules/livekit-client",
+	ssl: basicPath + "/ssl"
 } 
