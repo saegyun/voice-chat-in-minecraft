@@ -36,8 +36,8 @@ async function getAudios() {
 	}
 }
 
-$(document).ready(() => {
-	getAudios();
+$(document).ready(async () => {
+	await getAudios();
 
 	const name = $("#name");
 
@@ -87,6 +87,10 @@ $(document).ready(() => {
 
 	const roomEnter = async function() { 
 		const roomName = $(this).text();
+
+		if (info.room !== undefined) {
+			return;
+		}
 
 		// livekit 방 참가
 		const room = await livekit.joinRoom(info.name, roomName);
@@ -234,6 +238,14 @@ $(document).ready(() => {
 
 			roomSelectPage.fadeIn(100);
 		});
+
+		info.room = undefined;
+		info.roomName = "undefined";
+
+		$("#mic-off").hide(() => {
+			$("#mic-on").show();
+		});
+		info.muted = false;
 	});
 	$("#option-btn, #save").on("click", () => {
 		if ($("#popup-layer").css("display") === "none") {
@@ -242,6 +254,14 @@ $(document).ready(() => {
 		} else {
 			$("#popup-layer").hide();
 			$("#option").hide();
+		}
+	});
+
+	$("#mics").on("change", () => {
+		const target = livekit.getMicDevice();
+		if (info.room) {
+			// info.room.localParticipant.getTrack(Track.Source.Microphone)?.
+			info.room.switchActiveDevice('audioInput', target);
 		}
 	});
 });

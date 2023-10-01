@@ -74,7 +74,8 @@ export async function makeRoom(roomname) {
 }
 
 export function getMicDevice() {
-	const mic = Array($("#mics")[0].children[0]).find(v => v.selected === true);
+	const mics = $("#mics");
+	const mic = mics[0].options[$("#mics")[0].selectedIndex];
 	return mic.value;
 }
 
