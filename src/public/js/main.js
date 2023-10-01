@@ -87,12 +87,6 @@ $(document).ready(() => {
 
 		room.on(RoomEvent.ParticipantConnected, async (remoteParticipant) => {
 			updateMemberList(room);
-			const track = remoteParticipant.getTrack(Track.Source.Microphone);
-
-			if (track) {
-				track.setSubscribed(true);
-				console.log("track for new participant", remoteParticipant.identity, " -> ", track.trackSid);
-			}
 		});
 	
 		room.on(RoomEvent.ParticipantDisconnected, async () => {
@@ -115,6 +109,15 @@ $(document).ready(() => {
 				data += v.identity + " ";
 			});
 			console.log(data);
+		});
+
+		room.participants.forEach(participant => {
+			const track = participant.getTrack(Track.Source.Microphone);
+			
+			if (track) {
+				track.setSubscribed(true);
+				console.log("track for new participant", participant.identity, " -> ", track.trackSid);
+			}
 		});
 
 		roomSelectPage.fadeOut(100, async () => {
