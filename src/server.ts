@@ -13,7 +13,7 @@ const options = {
 	cert: fs.readFileSync(Paths.ssl + '/cert.pem')
 };
 
-const port = 8080;
+const port = 4430;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
