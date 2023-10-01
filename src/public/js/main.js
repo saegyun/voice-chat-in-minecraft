@@ -284,6 +284,12 @@ $(document).ready(async () => {
 				deviceId: target,
 			});
 			info.room.localParticipant.publishTrack(audioTrack);
+
+			if (!info.muted) {
+				info.room.localParticipant.getTrack(Track.Source.Microphone)?.unmute();
+			} else {
+				info.room.localParticipant.getTrack(Track.Source.Microphone)?.mute();
+			}
 		}
 	});
 });
