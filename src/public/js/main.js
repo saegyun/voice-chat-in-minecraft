@@ -142,22 +142,11 @@ $(document).ready(async () => {
 		room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
 			speakers.forEach(v => {
 				const userPosition = mc.getPosition(room.localParticipant.identity);
-				const targetPosition = mc.getPosition(v.identity);
-				const targetAudio = document.getElementById(v.identity);
+				// const targetPosition = mc.getPosition(v.identity);
+				// const targetAudio = document.getElementById(v.identity);
 				
-				console.log(`${v.identity} is speaking\nposition : ${targetPosition ? `${targetPosition.x} ${targetPosition.y} ${targetPosition.z}` : `undefined`}\n`);
-
-				if (!userPosition || !targetPosition || !targetAudio) {
-					return;
-				}
-
-				let dist = Math.pow(userPosition.x - targetPosition.x, 2)
-				 + Math.pow(userPosition.y - targetPosition.y, 2)
-				 + Math.pow(userPosition.z - targetPosition.z, 2);
-
-				dist = Math.floor(Math.sqrt(dist) * 10) / 10;
-				targetAudio.volume = calcVol(dist);
-				console.log(v.identity, dist, targetAudio.volume);
+				// console.log(`${v.identity} is speaking\nposition : ${targetPosition ? `${targetPosition.x} ${targetPosition.y} ${targetPosition.z}` : `undefined`}\n`);
+				console.log(`${v.identity} is speaking\n`);
 			});
 			console.log('\n');
 		});
@@ -338,19 +327,34 @@ $(document).ready(async () => {
 			info.socket = mc.connectWebSocket();
 			info.socket.on("position", (data) => {
 				if (info.room) {
-					if (data.name === info.room.localParticipant.identity) {
-						mc.setPosition(data.name, data.position);
-						console.log("update postition for", data.name, "\n");
-						return;
-					}
+					// if (data.name === info.room.localParticipant.identity) {
+					// 	mc.setPosition(data.name, data.position);
+					// 	console.log("update postition for", data.name, "\n");
+					// 	return;
+					// }
 
-					info.room.participants.forEach(v => {
-						if (v.identity === data.name) {
-							mc.setPosition(data.name, data.position);
-							console.log("update postition for", data.name, "\n");
-							return;
-						}
-					});
+					// info.room.participants.forEach(v => {
+					// 	if (v.identity === data.name) {
+					// 		mc.setPosition(data.name, data.position);
+					// 		console.log("update postition for", data.name, "\n");
+					// 		return;
+					// 	}
+					// });
+					mc.setPosition(data.name, data.position);
+					const targetPosition = mc.getPosition(data.name);
+					// const targetAudio = document.getElementById(data.name);
+
+					// if (!userPosition || !targetPosition || !targetAudio) {
+					// 	return;
+					// }
+
+					let dist = Math.pow(userPosition.x - targetPosition.x, 2)
+					+ Math.pow(userPosition.y - targetPosition.y, 2)
+					+ Math.pow(userPosition.z - targetPosition.z, 2);
+
+					dist = Math.floor(Math.sqrt(dist) * 10) / 10;
+					// targetAudio.volume = calcVol(dist);
+					console.log(data.name, dist, calcVol(dist));
 				}
 			});
 		
