@@ -52,6 +52,12 @@ async function getAudios() {
 
 $(document).ready(async () => {
 	await getAudios();
+	
+	$("#min-range")[0].readOnly = true;
+	$("#max-range")[0].readOnly = true;
+	
+	$("#min-range").val(info.min);
+	$("#max-range").val(info.max);
 
 	const name = $("#name");
 
@@ -277,6 +283,8 @@ $(document).ready(async () => {
 		if (info.socket) {
 			info.socket.disconnect();
 			info.socket = undefined;
+			$("#min-range")[0].readOnly = true;
+			$("#max-range")[0].readOnly = true;
 		}
 	});
 	$("#option-btn, #save").on("click", () => {
@@ -319,6 +327,9 @@ $(document).ready(async () => {
 	$("#minecraft").on("click", function() {
 		if (!info.socket) {
 			$(this).text("On");
+			$("#min-range")[0].readOnly = false;
+			$("#max-range")[0].readOnly = false;
+
 			info.socket = mc.connectWebSocket();
 			info.socket.on("position", (data) => {
 				if (info.room) {
@@ -360,6 +371,32 @@ $(document).ready(async () => {
 			$(this).text("Off");
 			info.socket.disconnect();
 			info.socket = undefined;
+
+			$("#min-range")[0].readOnly = true;
+			$("#max-range")[0].readOnly = true;
 		}
+	});
+	$("#min-range").on("change", function() {
+		if (Number.parseInt($(this).val()) + 5 > Number.parseInt($("#max-range").val())) {
+			$(this).val($("#max-range").val() - 5);
+		}
+		
+		if (Number.parseInt($(this).val()) < 5) {
+			$(this).val(5);
+		}
+
+		info.min = Number.parseInt($(this).val());
+	});
+
+	
+	$("#max-range").on("change", function() {
+		if (Number.parseInt($(this).val()) - 5 < Number.parseInt($("#min-range").val())) {
+			$(this).val($("#min-range").val() + 5);
+		}
+		if (Number.parseInt($(this).val()) < 10) {
+			$(this).val(10);
+		}
+
+		info.max = Number.parseInt($(this).val());
 	});
 });
