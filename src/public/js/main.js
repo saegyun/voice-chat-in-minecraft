@@ -155,7 +155,7 @@ $(document).ready(async () => {
 				 + Math.pow(userPosition.y - targetPosition.y, 2)
 				 + Math.pow(userPosition.z - targetPosition.z, 2);
 
-				dist = Math.sqrt(dist);
+				dist = Math.floor(Math.sqrt(dist) * 10) / 10;
 				targetAudio.volume = calcVol(dist);
 				console.log(v.identity, dist, targetAudio.volume);
 			});
