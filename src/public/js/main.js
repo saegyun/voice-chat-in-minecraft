@@ -15,8 +15,8 @@ const info = {
 function calcVol(d) {
 	if (d < info.min) { 
 		return 1;
-	} else if (d< info.max) {
-		return (100 - 2.25 * (40 / info.max - info.min) * (d -info.min)) / 100;
+	} else if (d < info.max) {
+		return Math.floor((100 - 2.25 * (40 / info.max - info.min) * (d -info.min)) / 10) / 10;
 	} else {
 		return 0;
 	}
@@ -157,6 +157,7 @@ $(document).ready(async () => {
 
 				dist = Math.sqrt(dist);
 				targetAudio.volume = calcVol(dist);
+				console.log(v.identity, dist, targetAudio.volume);
 			});
 			console.log('\n');
 		});
