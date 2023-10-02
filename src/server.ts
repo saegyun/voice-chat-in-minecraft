@@ -42,7 +42,7 @@ const io = new Server(server, {
 });
 
 initMinecraftWebSocket(3000, (player) => {
-	console.log(player.name, player.position);
+	// console.log(player.name, player.position);
 	
 	io.sockets.emit("position", {
 		name: player.name,

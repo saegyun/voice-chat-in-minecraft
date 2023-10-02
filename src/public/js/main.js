@@ -118,7 +118,9 @@ $(document).ready(async () => {
 		room.on(RoomEvent.ParticipantDisconnected, async (remoteParticipant) => {
 			updateMemberList(room);
 			document.getElementById(`${remoteParticipant.identity}`).remove();
-			mc.deletePosition(remoteParticipant.identity);
+			if (mc.deletePosition(remoteParticipant.identity)) {
+				console.log("delete postition for", data.name);
+			}
 		});
 	
 		room.on(RoomEvent.TrackSubscribed, async (track, publication, participant) => {
@@ -138,13 +140,13 @@ $(document).ready(async () => {
 		});
 	
 		room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
-			let data = "current speakers : ";
 			speakers.forEach(v => {
-				data += v.identity + " ";
 				const userPosition = mc.getPosition(room.localParticipant.identity);
 				const targetPosition = mc.getPosition(v.identity);
 				const targetAudio = document.getElementById(v.identity);
 				
+				console.log(`${v.identity} is speaking\nposition : ${targetPosition ? `${targetPosition.x} ${targetPosition.y} ${targetPosition.z}` : `undefined`}\n`);
+
 				if (!userPosition || !targetPosition || !targetAudio) {
 					return;
 				}
@@ -156,7 +158,7 @@ $(document).ready(async () => {
 				dist = Math.sqrt(dist);
 				targetAudio.volume = calcVol(dist);
 			});
-			console.log(data);
+			console.log('\n');
 		});
 
 		// room.on(RoomEvent.TrackPublished, (publication, remoteParticipant) => {
@@ -200,7 +202,8 @@ $(document).ready(async () => {
 			return;
 		}
 
-		info.name = nameInput.val() + "#" + Math.random().toString(36).slice(6);
+		info.name = nameInput.val();
+		// info.name = nameInput.val() + "#" + Math.random().toString(36).slice(6);
 		$("#name").text(info.name);
 		nameInsertPage.fadeOut(100, async () => {
 			// livekit 방 리스트 가져와서 append
@@ -332,6 +335,18 @@ $(document).ready(async () => {
 		if (!info.socket) {
 			$(this).text("On");
 			info.socket = mc.connectWebSocket();
+			info.socket.on("position", (data) => {
+				if (info.room) {
+					info.room.participants.forEach(v => {
+						if (v.identity === data.name) {
+							map.set(data.name, data.position);
+							console.log("update postition for", data.name);
+							return;
+						}
+					})
+				}
+			});
+		
 		} else {
 			$(this).text("Off");
 			info.socket.disconnect();

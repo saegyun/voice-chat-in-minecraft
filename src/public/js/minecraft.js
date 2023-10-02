@@ -7,6 +7,10 @@ export function getPosition(name) {
 	return position;
 }
 
+export function setPosition(name, position) {
+	map.set(name, position);
+}
+
 export function deletePosition(name) {
 	const position = map.get(name);
 	if (position) {
@@ -18,10 +22,6 @@ export function deletePosition(name) {
 
 export function connectWebSocket() {
 	const socket = io.connect();
-
-	socket.on("position", (data) => {
-		map.set(data.name, data.position);
-	});
 
 	return socket;
 }
