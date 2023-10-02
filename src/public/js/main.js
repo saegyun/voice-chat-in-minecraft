@@ -337,13 +337,19 @@ $(document).ready(async () => {
 			info.socket = mc.connectWebSocket();
 			info.socket.on("position", (data) => {
 				if (info.room) {
+					if (data.name === info.room.localParticipant.identity) {
+						mc.setPosition(data.name, data.position);
+						console.log("update postition for", data.name, "\n");
+						return;
+					}
+
 					info.room.participants.forEach(v => {
 						if (v.identity === data.name) {
-							map.set(data.name, data.position);
-							console.log("update postition for", data.name);
+							mc.setPosition(data.name, data.position);
+							console.log("update postition for", data.name, "\n");
 							return;
 						}
-					})
+					});
 				}
 			});
 		
