@@ -1,12 +1,26 @@
 import * as livekit from "./livekit.js"; 
 import { RoomEvent, Track, createLocalAudioTrack } from 'livekit-client';
+import * as mc from "./minecraft.js";
 
 const info = {
 	name: "undefined",
 	roomName: "undefined",
 	muted: false,
 	room: undefined,
+	socket: undefined,
+	min: 10,
+	max: 50,
 };
+
+function calcVol(d) {
+	if (d < info.min) { 
+		return 1;
+	} else if (d< info.max) {
+		return (100 - 2.25 * (40 / info.max - info.min) * (d -info.min)) / 100;
+	} else {
+		return 0;
+	}
+}
 
 async function getAudios() {
 	try {
@@ -104,6 +118,7 @@ $(document).ready(async () => {
 		room.on(RoomEvent.ParticipantDisconnected, async (remoteParticipant) => {
 			updateMemberList(room);
 			document.getElementById(`${remoteParticipant.identity}`).remove();
+			mc.deletePosition(remoteParticipant.identity);
 		});
 	
 		room.on(RoomEvent.TrackSubscribed, async (track, publication, participant) => {
@@ -126,6 +141,20 @@ $(document).ready(async () => {
 			let data = "current speakers : ";
 			speakers.forEach(v => {
 				data += v.identity + " ";
+				const userPosition = mc.getPosition(room.localParticipant.identity);
+				const targetPosition = mc.getPosition(v.identity);
+				const targetAudio = document.getElementById(v.identity);
+				
+				if (!userPosition || !targetPosition || !targetAudio) {
+					return;
+				}
+
+				let dist = Math.pow(userPosition.x - targetPosition.x, 2)
+				 + Math.pow(userPosition.y - targetPosition.y, 2)
+				 + Math.pow(userPosition.z - targetPosition.z, 2);
+
+				dist = Math.sqrt(dist);
+				targetAudio.volume = calcVol(dist);
 			});
 			console.log(data);
 		});
@@ -255,6 +284,12 @@ $(document).ready(async () => {
 			$("#mic-on").show();
 		});
 		info.muted = false;
+		
+		$("#minecraft").text("Off");
+		if (info.socket) {
+			info.socket.disconnect();
+			info.socket = undefined;
+		}
 	});
 	$("#option-btn, #save").on("click", () => {
 		if ($("#popup-layer").css("display") === "none") {
@@ -290,6 +325,17 @@ $(document).ready(async () => {
 			} else {
 				info.room.localParticipant.getTrack(Track.Source.Microphone)?.mute();
 			}
+		}
+	});
+
+	$("#minecraft").on("click", function() {
+		if (!info.socket) {
+			$(this).text("On");
+			info.socket = mc.connectWebSocket();
+		} else {
+			$(this).text("Off");
+			info.socket.disconnect();
+			info.socket = undefined;
 		}
 	});
 });
