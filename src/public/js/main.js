@@ -141,7 +141,7 @@ $(document).ready(async () => {
 	
 		room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
 			speakers.forEach(v => {
-				const userPosition = mc.getPosition(room.localParticipant.identity);
+				// const userPosition = mc.getPosition(room.localParticipant.identity);
 				// const targetPosition = mc.getPosition(v.identity);
 				// const targetAudio = document.getElementById(v.identity);
 				
@@ -341,6 +341,8 @@ $(document).ready(async () => {
 					// 	}
 					// });
 					mc.setPosition(data.name, data.position);
+				
+					const userPosition = mc.getPosition(room.localParticipant.identity);
 					const targetPosition = mc.getPosition(data.name);
 					// const targetAudio = document.getElementById(data.name);
 
