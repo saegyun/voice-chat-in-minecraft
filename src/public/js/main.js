@@ -52,6 +52,7 @@ async function getAudios() {
 
 $(document).ready(async () => {
 	await getAudios();
+	info.socket = mc.connectWebSocket();
 	
 	$("#min-range")[0].readOnly = true;
 	$("#max-range")[0].readOnly = true;
@@ -281,8 +282,7 @@ $(document).ready(async () => {
 		
 		$("#minecraft").text("Off");
 		if (info.socket) {
-			info.socket.disconnect();
-			info.socket = undefined;
+			info.socket.off("position");
 			$("#min-range")[0].readOnly = true;
 			$("#max-range")[0].readOnly = true;
 		}
@@ -325,12 +325,11 @@ $(document).ready(async () => {
 	});
 
 	$("#minecraft").on("click", function() {
-		if (!info.socket) {
+		if ($(this).text().trim() === "Off") {
 			$(this).text("On");
 			$("#min-range")[0].readOnly = false;
 			$("#max-range")[0].readOnly = false;
 
-			info.socket = mc.connectWebSocket();
 			info.socket.on("position", (data) => {
 				if (info.room) {
 					if (data.name === info.room.localParticipant.identity) {
@@ -369,8 +368,7 @@ $(document).ready(async () => {
 		
 		} else {
 			$(this).text("Off");
-			info.socket.disconnect();
-			info.socket = undefined;
+			info.socket.off("position");
 
 			$("#min-range")[0].readOnly = true;
 			$("#max-range")[0].readOnly = true;
@@ -398,5 +396,9 @@ $(document).ready(async () => {
 		}
 
 		info.max = Number.parseInt($(this).val());
+	});
+
+	info.socket.on("room", () => {
+		updateRoomList();
 	});
 });

@@ -1,21 +1,17 @@
 import express from "express";
-import { Paths } from "./common.js";
+import { Paths, Servers } from "./common.js";
 import { livekitRouter } from "./routers/livekit.js";
 import { initMinecraftWebSocket } from "./minecraft.js";
 import dotenv from "dotenv";
-import https from "https";
-import fs from "fs";
-import { Server, Socket } from "socket.io";
+import { Socket } from "socket.io";
+
+// dotenv init
 
 dotenv.config();
 
-const app = express();
-const options = {
-	key: fs.readFileSync(Paths.ssl + '/privKey.pem'),
-	cert: fs.readFileSync(Paths.ssl + '/cert.pem')
-};
+// express init
 
-const port = 4430;
+const app = Servers.express;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -32,14 +28,11 @@ app.get("/", (req, res) => {
 	res.sendFile(Paths.views + "/index.html");
 });
 
-const server = https.createServer(options, app);
+// server init
 
-const io = new Server(server, {
-	cors: {
-		origin: ["https://admin.socket.io"],
-		credentials: true,
-	},
-});
+const port = 4430;
+const server = Servers.https;
+const io = Servers.socket;
 
 initMinecraftWebSocket(3000, (player) => {
 	// console.log(player.name, player.position);

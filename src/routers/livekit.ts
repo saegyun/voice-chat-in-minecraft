@@ -1,8 +1,12 @@
 import express from "express";
 import { RoomServiceClient, Room, AccessToken } from "livekit-server-sdk";
 import dotenv from "dotenv";
+import { Server } from "socket.io";
+import { Servers } from "../common.js";
 
 dotenv.config();
+
+const io: Server = Servers.socket;
 
 export const livekitRouter = express.Router();
 
@@ -91,7 +95,7 @@ livekitRouter.get('/getMembers', async (req, res) => {
 livekitRouter.post('/makeRoom', async (req, res) => {
 	try {
 		if (!req.body.roomname) {
-				
+			
 			res.send(JSON.stringify({
 				"status": 500,
 				"reason": "roomname is undefined",
@@ -107,7 +111,7 @@ livekitRouter.post('/makeRoom', async (req, res) => {
 		});
 
 		console.log("room created", req.body.roomname, new Date());
-
+		io.sockets.emit("room");
 		res.send(JSON.stringify({
 			"status": 200,
 		}));
