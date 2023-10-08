@@ -77,6 +77,8 @@ button:hover {
     border-radius: 1.5rem;
 }
 .lists > ul {
+	position: relative;
+
 	margin: 1rem auto;
 	padding: 0.5rem;
 	
@@ -192,4 +194,12 @@ input[type='text'] {
 	position: absolute;
 	left: 5px;
 	bottom: 5px;
+}
+.member_mute_btn {
+    scale: 0.5;
+    color: white;
+    background-color: #cb6969;
+	position: absolute;
+	right: 1rem; 
+	bottom: -0.75rem;
 }

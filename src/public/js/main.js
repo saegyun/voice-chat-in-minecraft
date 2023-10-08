@@ -90,7 +90,19 @@ $(document).ready(async () => {
 		members.html("");
 
 		memberList.forEach(v => {
-			members.append($(`<ul>${v.identity}</ul>`));
+			const member = $(`<ul>${v.identity}</ul>`);
+			const muteBtn = $(`<button id="${v.identity}_mute" class="member_mute_btn">Mute</button>`);
+			member.append(muteBtn);
+			members.append(member);
+			muteBtn.on("click", () => {
+				if (muteBtn.text().trim() === "Mute") {
+					muteBtn.text("Play");
+					$(`#${v.identity}`).addClass("muted");
+				} else {
+					muteBtn.text("Mute");
+					$(`#${v.identity}`).removeClass("muted");
+				}
+			});
 		});
 	};
 
@@ -149,6 +161,13 @@ $(document).ready(async () => {
 		room.on(RoomEvent.ActiveSpeakersChanged, (speakers) => {
 			speakers.forEach(v => {
 				console.log(`${v.identity} is speaking\n`);
+				const target = $(`#${v.identity}`);
+				
+				if (target.hasClass("muted")) {
+					target[0].volume = 0;
+				} else if($("#minecraft").text().trim() === "Off") {
+					target[0].volume = 1;
+				}
 			});
 			console.log('\n');
 		});
@@ -350,6 +369,13 @@ $(document).ready(async () => {
 								return;
 							}
 
+							if ($(targetAudio).hasClass("muted")) {
+								targetAudio.volume = 0;
+								return;
+							} else {
+								targetAudio.volume = 1;
+							}
+
 							let dist = Math.pow(userPosition.x - targetPosition.x, 2)
 							+ Math.pow(userPosition.y - targetPosition.y, 2)
 							+ Math.pow(userPosition.z - targetPosition.z, 2);
@@ -372,6 +398,10 @@ $(document).ready(async () => {
 
 			$("#min-range")[0].readOnly = true;
 			$("#max-range")[0].readOnly = true;
+
+			Array($(".audioEmitter")).forEach(v => {
+				v.volume = 1;
+			});
 		}
 	});
 	$("#min-range").on("change", function() {
